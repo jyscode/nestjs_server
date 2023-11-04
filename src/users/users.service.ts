@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersModel } from './entities/users.entity';
 import { Repository } from 'typeorm';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -34,6 +35,10 @@ export class UsersService {
       nickname: user.nickname,
       email: user.email,
       password: user.password,
+      apikey: '',
+      apisecret: '',
+      account: 0,
+      accountb: 0,
     });
 
     const newUser = await this.usersRepository.save(userObject);
@@ -51,5 +56,32 @@ export class UsersService {
         email,
       },
     });
+  }
+  async getMe(email: string) {
+    return this.usersRepository.findOne({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+        nickname: true,
+        email: true,
+        account: true,
+        accountb: true,
+        apikey: true,
+        apisecret: true,
+        orderid: true,
+      },
+    });
+  }
+
+  async updateUser(id: number, body: UpdateUserDto) {
+    return this.usersRepository.update(id, body);
+  }
+  async updateUserOrder(id: number, orderid: number) {
+    const body = {
+      orderid: orderid,
+    };
+    return this.usersRepository.update(id, body);
   }
 }
