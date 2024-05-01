@@ -1,4 +1,18 @@
 services:
+  nodejs:
+    image: nodejs-nest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest-docker-app
+    ports:
+      - '3000:3000'
+    environment:
+      - PORT=${PORT}
+    depends_on:
+    - postgres
+    volumes:
+      - ./src:/app/src
   postgres:
     image: postgres:15
     restart: always
